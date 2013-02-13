@@ -24,12 +24,19 @@ module AuthorizeNet::CIM
           @address = @root.at_css('address')
           @payment_profile = @root.at_css('paymentProfile')
           @profile = @root.at_css('profile')
+          @token = node_content_unless_nil(@root.at_css('token'))
         rescue
           @raw_response = $!
         end
       end
     end
-    
+
+    # Returns a token
+    # Note that token expires in 15 minutes).
+    def token
+      @token
+    end
+
     # Returns a CustomerProfile ID if one was returned by the gateway. Returns nil otherwise.
     # Note that this method will return nil if we got back a list of IDs (see profile_ids).
     def profile_id

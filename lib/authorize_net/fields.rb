@@ -387,7 +387,7 @@ module AuthorizeNet
       TRANSACTION_AUTH_FIELDS = [
         {:profileTransAuthOnly => TRANSACTION_FIELDS}
       ]
-      
+
       TRANSACTION_AUTH_CAPTURE_FIELDS = [
         {:profileTransAuthCapture => TRANSACTION_FIELDS}
       ]
@@ -459,6 +459,16 @@ module AuthorizeNet
       GET_PROFILE_FIELDS = [
         CUSTOMER_PROFILE_ID_FIELDS
       ]
+
+      GET_HOSTED_PROFILE_PAGE=[
+          CUSTOMER_PROFILE_ID_FIELDS ,
+          {:hostedProfileSettings => [
+          ], :_conditional => :hosted_profile_settings}
+
+
+      ]
+
+
       
       GET_PAYMENT_FIELDS = [
         CUSTOMER_PROFILE_ID_FIELDS,
@@ -534,7 +544,8 @@ module AuthorizeNet
         AuthorizeNet::XmlTransaction::Type::CIM_UPDATE_PAYMENT => UPDATE_PAYMENT_FIELDS,
         AuthorizeNet::XmlTransaction::Type::CIM_UPDATE_ADDRESS => UPDATE_ADDRESS_FIELDS,
         AuthorizeNet::XmlTransaction::Type::CIM_UPDATE_SPLIT => UPDATE_SPLIT_FIELDS,
-        AuthorizeNet::XmlTransaction::Type::CIM_VALIDATE_PAYMENT => VALIDATE_PAYMENT_FIELDS
+        AuthorizeNet::XmlTransaction::Type::CIM_VALIDATE_PAYMENT => VALIDATE_PAYMENT_FIELDS  ,
+        AuthorizeNet::XmlTransaction::Type::CIM_HOSTED_PROFILE_PAGE => GET_HOSTED_PROFILE_PAGE
       }
       
       ADDRESS_ENTITY_DESCRIPTION = EntityDescription.new(

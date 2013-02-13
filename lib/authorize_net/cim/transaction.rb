@@ -14,7 +14,10 @@ module AuthorizeNet::CIM
       :verify_ssl => false,
       :reference_id => nil
     }
-    
+
+
+
+
     # Constructs a CIM transaction. You can use the new CIM transaction object
     # to issue a request to the payment gateway and parse the response into a new
     # AuthorizeNet::CIM::Response object.
@@ -64,7 +67,14 @@ module AuthorizeNet::CIM
       :card_code => nil,
       :validation_mode => :testMode
     }
-    
+
+
+    # The default options for create_hosted_page_token.
+    @@create_hosted_page_token_option_defaults = {
+      :hosted_profile_heading_bg_color => '#e0e0e0'
+    }
+
+
     # A list of keys that should be stored if passed as aim_options.
     @@aim_response_options = [:delim_char, :encap_char]
     
@@ -512,7 +522,37 @@ module AuthorizeNet::CIM
       handle_transaction_id(transaction_id)
       create_transaction(:refund, amount, profile_id, payment_profile_id, order, options)
     end
-    
+
+    # Sets up and submits a getHostedProfilePageRequest transaction.
+    # Use this function to initiate a request for direct access to the Authorize.Net website.
+    # The following table lists the input elements for executing an API call to the getHostedProfilePageRequest function.
+    # If this transaction has already been run, this method will return nil. Otherwise it will return an
+    # AuthorizeNet::CIM::Response object.
+    #
+    # +profile_id+:: Takes either a String containing the ID of the CustomerProfile who owns the PaymentProfile to be charged, or a CustomerProfile object with the ID populated.
+    #
+    # Settings:
+    # +hosted_profile_return_url+::  Enter the URL for the page the customer returns to when the hosted session ends. Do not pass this setting for iframes or popups. The return URL is validated to verify that it begins with http:// or https://.
+    # +hosted_profile_return_url_text+:: Enter the text to display on the button that returns the customer to your website. The value can be any text up to 200 characters. If you do not pass this parameter, the default button text is Continue. Do not pass this setting for iframes or popups.
+    # +hosted_profile_heading_bg_color+::  Enter a hex color string such as #e0e0e0. The background color of the section headers changes from gray to a custom color.
+    # +hosted_profile_page_border_visible+:: Enter true or false. Must be false for iframes or popups, and must be true for redirects.
+    # +hosted_profile_i_frame_communicator_url+:: Enter the URL to a page that can communicate with the merchant’s main page using javascript. This enables you to dynamically change the size of the popup so there are no scroll bars. This parameter is required only for iframe or lightbox applications.
+    # +hosted_profile_validation_mode+:: liveMode or testMode
+    #
+    # Typical usage: transaction.create_hosted_page_token('123456', settings)
+    # response = transaction.create_hosted_page_token(customer_profile.profile_id, settings)
+    # puts response.token if response.success?
+    #
+    def create_hosted_page_token(profile_id, settings={})
+       settings = @@create_hosted_page_token_option_defaults.merge(settings)
+       @type = Type::CIM_HOSTED_PROFILE_PAGE
+       handle_profile_id(profile_id)
+       handle_settings(settings)
+       make_request
+    end
+
+
+
     # Sets up and submits a updateSplitTenderGroupRequest transaction. Use this to end or void a split
     # tender batch. If this transaction has already been run, this method will return nil. Otherwise 
     # it will return an AuthorizeNet::CIM::Response object.
@@ -642,7 +682,12 @@ module AuthorizeNet::CIM
       @fields[:extra_options] ||= {}
       @fields[:extra_options].merge!(options)
     end
-    
+
+
+    def handle_settings(settings)
+       @hosted_settings = settings || Hash.new
+    end
+
     # Handles packing up custom fields.
     def handle_custom_fields(options)
       encoded_options = []
@@ -655,7 +700,71 @@ module AuthorizeNet::CIM
         return handle_custom_fields(options.to_hash)
       end
     end
-    
+
+
+
+    def hosted_profile_settings(node)
+       fields = []
+       @hosted_settings.each do  |k,v|
+         camelized_key = k.to_s.split('_').inject([]){ |buffer,e| buffer.push(buffer.empty? ? e : e.capitalize) }.join
+         fields << {:setting => [{:settingName => camelized_key} , {:settingValue => v}] }
+       end
+       fields
+    end
+
+#    def hosted_profile_return_url(node)
+#       if @hosted_settings[:hostedProfileReturnUrl]
+#         [{:settingName => 'hostedProfileReturnUrl'} , {:settingValue =>  @hosted_settings[:hostedProfileReturnUrl]}]
+#       else
+#         [{:settingName => 'hostedProfileReturnUrl'} , {:settingValue =>  @hosted_settings[:hostedProfileReturnUrl]}]
+#       end
+#    end
+#
+#
+#    def hosted_profile_return_url_text(node)
+#       if @hosted_settings[:hostedProfileReturnUrlText]
+#         [{:settingName => 'hostedProfileReturnUrlText'} , {:settingValue =>  @hosted_settings[:hostedProfileReturnUrlText]}]
+#       else
+#          [{:settingName => 'hostedProfileReturnUrlText'} , {:settingValue =>  @hosted_settings[:hostedProfileReturnUrlText]}]
+#       end
+#    end
+#
+#    def hosted_profile_page_border_visible(node)
+#       if @hosted_settings[:hostedProfilePageBorderVisible]
+#         [{:settingName => 'hostedProfilePageBorderVisible'} , {:settingValue =>  @hosted_settings[:hostedProfilePageBorderVisible]}]
+#       else
+#           [{:settingName => 'hostedProfilePageBorderVisible'} , {:settingValue =>  @hosted_settings[:hostedProfilePageBorderVisible]}]
+#       end
+#    end
+#
+#
+#    def hosted_profile_page_border_heading_bg_color(node)
+#       if @hosted_settings[:hostedProfileHeadingBgColor]
+#         [{:settingName => 'hostedProfileHeadingBgColor'} , {:settingValue =>  @hosted_settings[:hostedProfileHeadingBgColor]}]
+#       else
+#          [{:settingName => 'hostedProfileHeadingBgColor'} , {:settingValue =>  @hosted_settings[:hostedProfileHeadingBgColor]}]
+#       end
+#    end
+#
+#
+#
+#   def hosted_profile_page_validation_mode(node)
+#       if @hosted_settings[:hostedProfileValidationMode]
+#         [{:settingName => 'hostedProfileValidationMode'} , {:settingValue =>  @hosted_settings[:hostedProfileValidationMode]}]
+#       else
+#          [{:settingName => 'hostedProfileValidationMode'} , {:settingValue => nil}]
+#       end
+#    end
+#
+#
+#     def hosted_profile_iframe_communicator_url(node)
+#       if @hosted_settings[:hostedProfileIFrameCommunicatorUrl]
+#         [{:settingName => 'hostedProfileIFrameCommunicatorUrl'} , {:settingValue =>  @hosted_settings[:hostedProfileIFrameCommunicatorUrl]}]
+#       else
+#          [{:settingName => 'hostedProfileIFrameCommunicatorUrl'} , {:settingValue => nil}]
+#       end
+#    end
+
     # Callback for creating the right node structure for a given transaction type. `node` is ignored for now.
     def select_transaction_type_fields(node)
       case @transaction_type
