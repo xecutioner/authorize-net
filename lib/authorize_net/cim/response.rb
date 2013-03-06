@@ -69,7 +69,12 @@ module AuthorizeNet::CIM
     def payment_profile_ids
       @customer_payment_profile_id_list
     end
-    
+
+
+    def transaction
+      @transaction
+    end
+
     # Returns a validation response as an AuthorizeNet::AIM::Response object if a validation response was returned
     # by the gateway. Returns nil otherwise.
     # Note that this method will return nil if we got back a list of IDs (see validation_responses).
