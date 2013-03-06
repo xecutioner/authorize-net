@@ -712,58 +712,6 @@ module AuthorizeNet::CIM
        fields
     end
 
-#    def hosted_profile_return_url(node)
-#       if @hosted_settings[:hostedProfileReturnUrl]
-#         [{:settingName => 'hostedProfileReturnUrl'} , {:settingValue =>  @hosted_settings[:hostedProfileReturnUrl]}]
-#       else
-#         [{:settingName => 'hostedProfileReturnUrl'} , {:settingValue =>  @hosted_settings[:hostedProfileReturnUrl]}]
-#       end
-#    end
-#
-#
-#    def hosted_profile_return_url_text(node)
-#       if @hosted_settings[:hostedProfileReturnUrlText]
-#         [{:settingName => 'hostedProfileReturnUrlText'} , {:settingValue =>  @hosted_settings[:hostedProfileReturnUrlText]}]
-#       else
-#          [{:settingName => 'hostedProfileReturnUrlText'} , {:settingValue =>  @hosted_settings[:hostedProfileReturnUrlText]}]
-#       end
-#    end
-#
-#    def hosted_profile_page_border_visible(node)
-#       if @hosted_settings[:hostedProfilePageBorderVisible]
-#         [{:settingName => 'hostedProfilePageBorderVisible'} , {:settingValue =>  @hosted_settings[:hostedProfilePageBorderVisible]}]
-#       else
-#           [{:settingName => 'hostedProfilePageBorderVisible'} , {:settingValue =>  @hosted_settings[:hostedProfilePageBorderVisible]}]
-#       end
-#    end
-#
-#
-#    def hosted_profile_page_border_heading_bg_color(node)
-#       if @hosted_settings[:hostedProfileHeadingBgColor]
-#         [{:settingName => 'hostedProfileHeadingBgColor'} , {:settingValue =>  @hosted_settings[:hostedProfileHeadingBgColor]}]
-#       else
-#          [{:settingName => 'hostedProfileHeadingBgColor'} , {:settingValue =>  @hosted_settings[:hostedProfileHeadingBgColor]}]
-#       end
-#    end
-#
-#
-#
-#   def hosted_profile_page_validation_mode(node)
-#       if @hosted_settings[:hostedProfileValidationMode]
-#         [{:settingName => 'hostedProfileValidationMode'} , {:settingValue =>  @hosted_settings[:hostedProfileValidationMode]}]
-#       else
-#          [{:settingName => 'hostedProfileValidationMode'} , {:settingValue => nil}]
-#       end
-#    end
-#
-#
-#     def hosted_profile_iframe_communicator_url(node)
-#       if @hosted_settings[:hostedProfileIFrameCommunicatorUrl]
-#         [{:settingName => 'hostedProfileIFrameCommunicatorUrl'} , {:settingValue =>  @hosted_settings[:hostedProfileIFrameCommunicatorUrl]}]
-#       else
-#          [{:settingName => 'hostedProfileIFrameCommunicatorUrl'} , {:settingValue => nil}]
-#       end
-#    end
 
     # Callback for creating the right node structure for a given transaction type. `node` is ignored for now.
     def select_transaction_type_fields(node)
