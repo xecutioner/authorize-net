@@ -110,6 +110,29 @@ There is also a default layout generated, <tt>app/views/layouts/authorize_net.er
     raise "Failed to make purchase."
   end
 
+
+== CIM getHostedProfilePageRequest
+
+  require 'rubygems'
+  require 'authorize_net'
+
+  transaction = AuthorizeNet::CIM::Transaction.new('API_LOGIN', 'API_KEY', :gateway => :sandbox)
+  profile = AuthorizeNet::CIM::CustomerProfile.new(
+    :email => 'test@example.com',
+    :id => 'userassignedid'
+  )
+  response = transaction.create_hosted_page_token(profile, settings)
+
+  if response.success?
+    puts "Successfully created hosted page token: #{response.token}"
+  else
+    raise "Failed to create hosted page token."
+  end
+
+
+
+
+
 == Credit Card Test Numbers
 
 For your reference, you can use the following test credit card numbers.
